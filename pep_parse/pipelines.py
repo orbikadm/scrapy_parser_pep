@@ -1,8 +1,6 @@
 import datetime
 from collections import Counter
 
-from itemadapter import ItemAdapter
-
 from pep_parse.settings import BASE_DIR, TIME_FORMAT
 
 
@@ -16,12 +14,12 @@ class PepParsePipeline:
 
     def close_spider(self, spider):
         total = sum(self.counter.values())
-        result_dir =  BASE_DIR / 'results'
+        result_dir = BASE_DIR / 'results'
         result_dir.mkdir(exist_ok=True)
 
         doc_time = datetime.datetime.now().strftime(TIME_FORMAT)
         filename = f'status_summary_{doc_time}.csv'
-        
+
         result_path = result_dir / filename
 
         with open(result_path, mode='w', encoding='utf-8') as f:

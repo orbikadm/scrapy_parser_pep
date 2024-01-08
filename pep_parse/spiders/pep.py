@@ -17,14 +17,14 @@ class PepSpider(scrapy.Spider):
             yield response.follow(pep_link, callback=self.parse_pep)
 
     def parse_pep(self, response):
-        pep_info = response.css('h1.page-title::text').get()
-        re_pattern = r'(?P<number>\d+) – (?P<name>.+)'
-        
+        pep_info = response.css('title::text').get()
+        re_pattern = r'(?P<number>\d+) – (?P<name>.+) \| peps.python.org'
+
         pep_match = re.search(re_pattern, pep_info)
         number, name = pep_match.group('number', 'name')
         data = {
-        'number': number,
-        'name': name,
-        'status': response.css('abbr::text').get()
+            'number': number,
+            'name': name.strip(),
+            'status': response.css('abbr::text').get()
         }
         yield PepParseItem(data)
