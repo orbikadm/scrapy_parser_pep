@@ -1,14 +1,15 @@
-import re
-
 import scrapy
 
 from pep_parse.items import PepParseItem
+from pep_parse.settings import (
+    END_NAME, MID_SEP, SPIDER_NAME, SPIDER_PEP_URL, START_NAME
+)
 
 
 class PepSpider(scrapy.Spider):
-    name = 'pep'
-    allowed_domains = ['peps.python.org']
-    start_urls = ['https://peps.python.org/']
+    name = SPIDER_NAME
+    allowed_domains = [SPIDER_PEP_URL]
+    start_urls = [f'https://{SPIDER_PEP_URL}/']
 
     def parse(self, response):
         pep_tr_tags = response.css('section tbody tr')
@@ -17,11 +18,10 @@ class PepSpider(scrapy.Spider):
             yield response.follow(pep_link, callback=self.parse_pep)
 
     def parse_pep(self, response):
-        pep_info = response.css('title::text').get()
-        re_pattern = r'(?P<number>\d+) – (?P<name>.+) \| peps.python.org'
-
-        pep_match = re.search(re_pattern, pep_info)
-        number, name = pep_match.group('number', 'name')
+        pep_info = response.css('title::text').get().rstrip(END_NAME)
+        data_list = pep_info.split(MID_SEP)
+        number = data_list[0].lstrip(START_NAME)
+        name = data_list[1]
         data = {
             'number': number,
             'name': name.strip(),

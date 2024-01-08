@@ -22,3 +22,10 @@ ITEM_PIPELINES = {
 }
 
 TIME_FORMAT = '%Y-%m-%d_%H-%M-%S'
+
+SPIDER_NAME = 'pep'
+SPIDER_PEP_URL = 'peps.python.org'
+
+START_NAME = 'PEP '
+MID_SEP = ' – '
+END_NAME = '| peps.python.org'
